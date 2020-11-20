@@ -2,6 +2,7 @@ import requests
 import re
 import sys
 from threading import Thread
+from urllib3 import fields
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -23,6 +24,7 @@ url_wot = "https://redirect.wargaming.net/WGC/Wargaming_Game_Center_Install_WoT_
 url_epic = "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" #msi
 url_osu = "https://m1.ppy.sh/r/osu!install.exe"
 url_origin = "https://www.dm.origin.com/download"
+url_rockstar = "https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe"
 
 #utility
 url_winrar = "https://www.netzmechanik.de/dl/4/winrar-x64-{}.exe".format(
@@ -33,6 +35,28 @@ url_java = "https://javadl.oracle.com/webapps/download/AutoDL?BundleId=243737_61
 url_wireshark = "https://1.eu.dl.wireshark.org/win64/Wireshark-win64-{}.exe".format(
     sorted(re.findall("3\.[0-9]\.[0-9]", requests.get("https://www.wireshark.org/#download").text))[-1])
 
+url_corsair_icue = "https://downloads.corsair.com/Files/CUE/iCUESetup_{}_release.msi".format(
+    sorted(re.findall("3\.[0-9]{2}\.[0-9]{3}", requests.get("https://www.corsair.com/de/de/downloads#download_form_1").text))[-1])
+
+url_filezilla = "https://download.filezilla-project.org/client/FileZilla_{}_win64_sponsored-setup.exe".format(
+    sorted(re.findall("3\.[0-9]{2}\.[0-9]", requests.get("https://filezilla-project.org/download.php?type=client").text))[-1])
+
+url_cygwin = "https://cygwin.com/setup-x86_64.exe"
+
+#editors
+url_vs_code = "https://aka.ms/win32-x64-user-stable"
+
+url_miktex = "https://miktex.org/download/ctan/systems/win32/miktex/setup/windows-x64/{}".format(
+    sorted(re.findall("basic-miktex.{1,}x64.exe", requests.get("https://miktex.org/download").text))[-1])
+
+url_notepad_pp = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v{0}/npp.{0}.Installer.x64.exe".format(
+    sorted(re.findall("[0-9]\.[0-9]\.[0-9]", requests.get("https://notepad-plus-plus.org/downloads/").text))[-1])
+
+url_pycharm = "https://download.jetbrains.com/python/pycharm-professional-{}.exe".format(
+    sorted(re.findall("20[0-9]{2}\.[0-9].[0-9]",requests.get("https://www.jetbrains.com/de-de/pycharm/download/").text))[-1])
+
+url_intellij = "https://download.jetbrains.com/idea/ideaIU-{}.exe".format(
+    sorted(re.findall("20[0-9]{2}\.[0-9].[0-9]",requests.get("https://www.jetbrains.com/de-de/pycharm/download/").text))[-1])
 
 def download(url, name):
     with open("installer_{}.exe".format(name), "wb") as f:
@@ -48,14 +72,15 @@ def download(url, name):
                 downloaded_bytes += len(data)
                 f.write(data)
                 progress = int(50 * downloaded_bytes / fsize)
-                sys.stdout.write("\rDownloading form: {} ({}{})".format(url ,"="*progress, " "*(50-progress)))
+                sys.stdout.write("\rDownloading form: {} ({}{})".format(url, "="*progress, " "*(50-progress)))
                 sys.stdout.flush()
 
 
 
-selected_urls = []
+selected_urls = [url_intellij]
 counter = 0
 for url in selected_urls:
+    print(url)
     counter += 1
     t = Thread(target=download, args=(url, counter))
     t.start()
