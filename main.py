@@ -2,7 +2,7 @@ import requests
 import re
 import sys
 from threading import Thread
-from urllib3 import fields
+import json
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -16,6 +16,7 @@ url_discord = "https://discord.com/api/download?platform=win"
 #browsers
 url_firefox = "https://download.mozilla.org/?product=firefox-stub&os=win"
 url_opera = "https://www.opera.com/de/computer/thanks?ni=stable&os=windows"
+url_chrome = "https://dl.google.com/tag/s/appguid/update2/installers/ChromeSetup.exe"
 
 #games
 url_steam = "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe"
@@ -43,6 +44,9 @@ url_filezilla = "https://download.filezilla-project.org/client/FileZilla_{}_win6
 
 url_cygwin = "https://cygwin.com/setup-x86_64.exe"
 
+url_dashlane = json.loads(requests.get("https://ws1.dashlane.com/5/binaries/query?platform=website&target=launcher_win&os=WIN_10_0_0").
+                          content.decode())["content"]["location"]
+
 #editors
 url_vs_code = "https://aka.ms/win32-x64-user-stable"
 
@@ -57,6 +61,8 @@ url_pycharm = "https://download.jetbrains.com/python/pycharm-professional-{}.exe
 
 url_intellij = "https://download.jetbrains.com/idea/ideaIU-{}.exe".format(
     sorted(re.findall("20[0-9]{2}\.[0-9].[0-9]",requests.get("https://www.jetbrains.com/de-de/pycharm/download/").text))[-1])
+
+url_adobe_acrobat_reader = "https://admdownload.adobe.com/bin/livebeta/readerdc_de_ha_crd_install.exe"
 
 def download(url, name):
     with open("installer_{}.exe".format(name), "wb") as f:
@@ -77,10 +83,13 @@ def download(url, name):
 
 
 
-selected_urls = [url_intellij]
+selected_urls = [url_dashlane]
 counter = 0
 for url in selected_urls:
     print(url)
     counter += 1
     t = Thread(target=download, args=(url, counter))
     t.start()
+
+
+
