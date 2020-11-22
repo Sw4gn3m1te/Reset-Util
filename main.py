@@ -1,6 +1,7 @@
 import requests
 import re
 import sys
+import os
 from threading import Thread
 import json
 import warnings
@@ -64,6 +65,7 @@ url_intellij = "https://download.jetbrains.com/idea/ideaIU-{}.exe".format(
 
 url_adobe_acrobat_reader = "https://admdownload.adobe.com/bin/livebeta/readerdc_de_ha_crd_install.exe"
 
+
 def download(url, name):
     with open("installer_{}.exe".format(name), "wb") as f:
         resp = requests.get(url, stream=True, verify=False)
@@ -82,8 +84,26 @@ def download(url, name):
                 sys.stdout.flush()
 
 
+def copy(name, fp):
+    with open(fp) as f1:
+        with open(name, "w") as f2:
+            for line in f1:
+                f2.write(line)
 
-selected_urls = [url_dashlane]
+
+def backup_browser_history(browser):
+    username = os.getlogin()
+    browser_bookmark_paths = {
+        "chrome" : rf"C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default",
+        "firefox" : rf"C:\Users\{username}\AppData\Roaming\Mozilla\Firefox\Profiles\bookmarkbackups",
+        "opera" : rf"C:\Users\{username}\AppData\Roaming\Opera Software\Opera Stable\Bookmarks"
+    }
+
+    copy(f"Bookmarks_{browser}", browser_bookmark_paths.get(browser))
+
+
+
+selected_urls = []
 counter = 0
 for url in selected_urls:
     print(url)
@@ -91,5 +111,4 @@ for url in selected_urls:
     t = Thread(target=download, args=(url, counter))
     t.start()
 
-
-
+backup_browser_history("opera")
