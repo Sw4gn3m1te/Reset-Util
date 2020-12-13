@@ -58,6 +58,8 @@ url_gforce_experiance = re.findall("https://de.download.nvidia.com/GFE/GFEClient
 url_wooting = re.findall("https://s3.eu-west-2.amazonaws.com/wooting-update/wootility-win-latest/wootility\+Setup\+[0-9]\.[0-9]\.[0-9]{1,3}\.exe",
                          requests.get("https://wooting.io/wootility").text)[0]
 
+url_oao_shutup = "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe"
+
 #editors
 url_vs_code = "https://aka.ms/win32-x64-user-stable"
 
@@ -97,6 +99,12 @@ def download(url, name, type="exe"):
                 sys.stdout.flush()
 
 
+def backup_minecraft():
+
+    username = os.getlogin()
+    mcpath = rf"C:\Users\{username}\AppData\Roaming/.minecraft"
+
+
 def backup_browser_history(browser):
     username = os.getlogin()
     browser_bookmark_paths = {
@@ -104,10 +112,10 @@ def backup_browser_history(browser):
         "firefox": rf"C:\Users\{username}\AppData\Roaming\Mozilla\Firefox\Profiles\bookmarkbackups",
         "opera": rf"C:\Users\{username}\AppData\Roaming\Opera Software\Opera Stable\Bookmarks"
     }
-    shutil.copy(browser_bookmark_paths.get(browser), os.getcwd()+"//opera_Bookmarks")
+    shutil.copy(browser_bookmark_paths.get(browser), os.getcwd()+f"//{browser}_Bookmarks")
 
 
-selected_urls = [url_wooting]
+selected_urls = []
 counter = 0
 for url in selected_urls:
     print(url)
